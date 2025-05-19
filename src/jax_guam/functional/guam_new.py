@@ -44,7 +44,7 @@ class FuncGUAM:
         self.surf_eng = SurfEngine()
         self.aero_prop = FuncAeroProp()
 
-        self.dt = 0.005
+        self.dt = 0.1 #0.005
 
     @property
     def env_data(self) -> EnvData:

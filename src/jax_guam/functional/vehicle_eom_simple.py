@@ -107,7 +107,7 @@ class VehicleEOMSimple:
         eYdt = input[6] * input[0] + input[3] * input[1] - input[4] * input[2]
         eZdt = -input[5] * input[0] + input[4] * input[1] + input[3] * input[2]
         QDt_i2b = jnp.concatenate([e0dt, eXdt, eYdt, eZdt]).reshape((4, -1))
-        stabilization_gain = (jnp.sum(jnp.square(q_i2b)) - 1.0) * 0.1 # Added jnp.square to stabilization gain calculation (3/31)
+        stabilization_gain = (jnp.sum(jnp.square(q_i2b)) - 1.0) * 0.1 # Added square to stabilization gain (3/27)
         QDt_i2b = QDt_i2b - q_i2b * stabilization_gain
 
         # return ddt_vb, ddt_pqr, ddt_posi, QDt_i2b

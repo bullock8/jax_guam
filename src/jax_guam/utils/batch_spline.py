@@ -3,6 +3,7 @@ from typing import TypeVar
 import numpy as np
 import scipy
 from typing_extensions import Self
+import scipy.interpolate
 
 TState = TypeVar("TState")
 TFloat = TypeVar("TFloat")

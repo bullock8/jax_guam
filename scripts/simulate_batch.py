@@ -18,13 +18,13 @@ def main():
     jax_use_double()
     set_logger_format()
 
-    final_time = 45.0
+    final_time = 45#45.0
 
     logger.info("Constructing GUAM...")
     guam = FuncGUAM()
     logger.info("Calling GUAM...")
 
-    batch_size = 4096
+    batch_size = 1#4096
     # batch_size = 8192
     # batch_size = 16_384
     state = GuamState.create()
@@ -33,8 +33,8 @@ def main():
 
     # Perturb the initial state in the x and y directions.
     key0, key1 = jr.split(jr.PRNGKey(0))
-    b_state.aircraft[:, 6] = jr.uniform(key0, (batch_size,), minval=-20.0, maxval=20.0)
-    b_state.aircraft[:, 7] = jr.uniform(key1, (batch_size,), minval=-20.0, maxval=20.0)
+    b_state.aircraft[:, 6] = jr.uniform(key0, (batch_size,), minval=-0.0, maxval=0.0)
+    b_state.aircraft[:, 7] = jr.uniform(key1, (batch_size,), minval=0.0, maxval=0.0)
 
     vmap_step = jax.jit(jax.vmap(ft.partial(guam.step, guam.dt), in_axes=(0, None)))
 

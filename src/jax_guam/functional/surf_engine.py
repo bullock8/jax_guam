@@ -35,9 +35,9 @@ class SurfEngine:
         self.POS_LO = -self.POS_HI
 
     @ft.partial(jax.jit, static_argnums=0)
-    def get_surf_prop_act(self, state: SurfEngineState, cmd: Cmd, power: Power) -> tuple[SurfAct, PropAct]:
+    def get_surf_prop_act(self, state: SurfEngineState, cmd: Cmd, power: Power, engine_failure: Failure_Engines = None) -> tuple[SurfAct, PropAct]:
         surfaces = self._get_control_surfaces(state.ctrl_surf_state, cmd.CtrlSurfaceCmd)
-        engines = self._get_propulsion(cmd.EngineCmd)
+        engines = self._get_propulsion(cmd.EngineCmd, engine_failure)
         return surfaces, engines
 
     @ft.partial(jax.jit, static_argnums=0)
@@ -84,8 +84,15 @@ class SurfEngine:
         failure_surfaces = None
         return SurfAct(ctrl_surf_state, ctrl_surf_rate, failure_surfaces)
 
-    def _get_propulsion(self, eng_cmd: EngineControl) -> PropAct:
+    def _get_propulsion(self, eng_cmd: EngineControl, engine_failure: Failure_Engines = None) -> PropAct:
         eng_speed = eng_cmd
         eng_accel = np.zeros(eng_cmd.shape)
-        failure = None
-        return PropAct(eng_speed, eng_accel, failure)
+        # failure = None
+        # print(type(eng_speed))
+        # print(engine_failure.F_Fail_Initiate)
+        # print(engine_failure.F_Fail_Initiate.shape)
+        if engine_failure is not None:
+           mask = engine_failure.F_Fail_Initiate.reshape(eng_speed.shape) == 1
+           eng_speed = jnp.where(mask, 0, eng_speed)
+        
+        return PropAct(eng_speed, eng_accel, engine_failure)
